@@ -9,111 +9,60 @@ import { Widget, addResponseMessage, addLinkSnippet, addUserMessage } from 'reac
  
  
 class App extends React.Component {
-
-
-
-  render() {
-    return (
-      <div>  
-	  <CBW/>
-	  <MSG/>
-	  <RSP/>
-	  <WBPG/>
-      </div>
-    );
-  }
-}
-
-class CBW extends React.Component {
-  render() {
-    return (
-      <div className="CBW">
-        <Widget />
-      </div>
-    );
-  }
-}
-
-class MSG extends React.Component {
-  handleNewUserMessage = (newMessage) => {
-    console.log(`New message incoming! ${newMessage}`);
-    // Now send the message throught the backend API
-  }
-
-  render() {
-    return (
-      <div className="MSG">
-        <Widget
-          handleNewUserMessage={this.handleNewUserMessage}
-        />
-      </div>
-    );
-  }
-}
-
-class RSP extends React.Component {
   constructor(){
   super();
-  this.state={};
+  var resp=" ";
 
 }
-  componentDidMount() {
-    
-    addResponseMessage("How can I help you? Would you like to know your MARKS or EXAM DATES?");
-    var resp;
 
-    var both="stud1";
-  const rootref = firebase.database().ref().child(both);
-  const nameref = rootref.child('Name');
-  const marref=rootref.child('marks');
-  const phoref=rootref.child('phone');
-  const regref=rootref.child('regid');
-  const semref=rootref.child('semester')
+    componentDidMount() {
   
-  nameref.on('value',snap => {
-    this.setState({Name: snap.val()});
-  });
-    marref.on('value',snap => {
-    this.setState({marks: snap.val()});
-  });
-     phoref.on('value',snap => {
-    this.setState({phone: snap.val()});
-  });
-      regref.on('value',snap => {
-    this.setState({regid: snap.val()});
-  });
-       semref.on('value',snap => {
-    this.setState({semester: snap.val()});
+  const rootref = firebase.database().ref().child('mark').child('mark1');
+  const Idref=rootref.child('Id');
+  const engref=rootref.child('english');
+      Idref.on('value',snap => {
+    this.setState({Id: snap.val()});
   });
   
+        engref.on('value',snap => {
+    this.setState({english: snap.val()});
+  });
   }
  
   handleNewUserMessage = (response) => {
+
     console.log(`New message incoming! ${response}`);
     // Now send the message throught the backend API
-    if(response=="stud details")
-    {
-      addResponseMessage("Specify your name?");
-       
-   }
-    
-    if(response=="stud1"||response=="stud2")
-    {
-      //resp=response;
-     addResponseMessage("Details are as follows:");
-     addResponseMessage(this.state.Name);
 
-     } 
-    
-    else
-    addResponseMessage("HI");                                     //COME BACK
-    
+    this.resp=response.toLowerCase();
+
+    if(this.resp=="hey")
+    {
+     addResponseMessage("Hi"); 
+   }
+    else if(this.resp=="mark1"||this.resp=="mark2")
+    {
+
+     addResponseMessage("Details are as follows:")
+     addResponseMessage("English: "+this.state.english)
+     addResponseMessage("Id: "+this.state.Id)
+
+     }                                                                                                  //COME BACK
+    else{
+      addResponseMessage("Sorry!")     
+    }
   }
+
 
   render() {
     return (
       <div className="RSP"> 
-
+              <header className="App-header" align="center">
+          <img src={logo} className="App-logo" alt="logo" />
+          <h1 className="App-title" align="center">Welcome to the ChatBot</h1>
+        </header>
+        <p className="App-intro">
+        </p>
         <Widget 
               handleNewUserMessage={this.handleNewUserMessage}
 		      profileAvatar={logo}
@@ -127,20 +76,7 @@ class RSP extends React.Component {
 }
 
  
-class WBPG extends React.Component {
-  render() {
-    return (
-      <div className="WBPG">
-        <header className="App-header" align="center">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h1 className="App-title" align="center">Welcome to the <b>ChatBot</b></h1>
-        </header>
-        <p className="App-intro">
-        </p>
-      </div>
-    );
-  }
-}
+
 /*          <a>NAME: {this.state.Name}</a><div></div>
     <a>MARKS: {this.state.marks}</a><div></div>
     <a>Phone No: {this.state.phone}</a><div></div>
